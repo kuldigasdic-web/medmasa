@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      /* Poga audio atbloķēšanai mobilajās ierīcēs */
+      #playButton {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        background-color: #ff4757;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-family: sans-serif;
+        font-weight: bold;
+        z-index: 9999;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <button id="playButton">Pieskaries, lai ieslēgtu skaņu</button>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
+      <a-assets>
+        <!-- Ievieto šeit sava video faila nosaukumu (piem., medmasa.mp4) -->
+        <!-- playsinline un webkit-playsinline ir obligāti iPhone ierīcēm -->
+        <video id="medmasaVideo" src="./medmasa.mp4" preload="auto" loop playsinline webkit-playsinline></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="targetEntity" mindar-image-target="targetIndex: 0">
+        <!-- Pielāgo height un width atbilstoši video proporcijām (piem., 1 un 0.75 vai 1 un 1.33) -->
+        <a-video src="#medmasaVideo" position="0 0 0" height="1" width="0.75" rotation="0 0 0"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const video = document.querySelector('#medmasaVideo');
+      const playBtn = document.querySelector('#playButton');
+      const targetEntity = document.querySelector('#targetEntity');
+
+      // Lietotājs nospiež pogu, lai pārlūks atļauj skaņu
+      playBtn.addEventListener('click', () => {
+        video.play();
+        video.pause(); // Sagatavo atskaņošanai
+        playBtn.style.display = 'none'; // Paslēpj pogu
+      });
+
+      // Kad kamera ierauga medmāsas kartiņu
+      targetEntity.addEventListener('targetFound', () => {
+        video.play();
+      });
+
+      // Kad kamera pazaudē kartiņu no redzesloka
+      targetEntity.addEventListener('targetLost', () => {
+        video.pause();
+      });
+    </script>
+  </body>
+</html>
