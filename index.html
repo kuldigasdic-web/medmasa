@@ -29,12 +29,12 @@
   <body>
     <button id="playButton">Pieskaries, lai ieslēgtu skaņu</button>
 
-    <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+   <a-scene 
+  mindar-image="imageTargetSrc: ./targets.mind; filterMinCF: 0.001; filterBeta: 1000;" 
+  color-space="sRGB" 
+  renderer="colorManagement: true, physicallyCorrectLights" 
+  vr-mode-ui="enabled: false" 
+  device-orientation-permission-ui="enabled: false">
       
       <a-assets>
         <!-- Ievieto šeit sava video faila nosaukumu (piem., medmasa.mp4) -->
@@ -45,9 +45,15 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity id="targetEntity" mindar-image-target="targetIndex: 0">
-        <!-- Pielāgo height un width atbilstoši video proporcijām (piem., 1 un 0.75 vai 1 un 1.33) -->
-        <a-video src="#medmasaVideo" position="0 0 0" height="1" width="0.75" rotation="0 0 0"></a-video>
-      </a-entity>
+  <!-- width un height palielināti; Z pozīcija 0.08 paceļ video gaisā pret kameru -->
+  <a-video 
+    src="#medmasaVideo" 
+    position="0 0 0.08" 
+    width="1.0" 
+    height="1.33" 
+    rotation="0 0 0">
+  </a-video>
+</a-entity>
     </a-scene>
 
     <script>
